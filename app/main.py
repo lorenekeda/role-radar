@@ -1,11 +1,15 @@
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
 
-app = FastAPI()
+from app.routes.opportunities import router as opportunities_router
 
-templates = Jinja2Templates(directory="templates")
+app = FastAPI(
+    title="Role Radar API",
+    description="API for aggregating and managing job opportunities",
+    version="1.0.0",
+)
 
+app.include_router(opportunities_router)
 
-@app.get("/", include_in_schema=False)
-def home(request: Request):
-    return templates.TemplateResponse(request, "home.html")
+@app.get("/")
+def root():
+    return {"message": "Role Radar API is running!"}
