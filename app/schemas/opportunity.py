@@ -50,3 +50,10 @@ class OpportunityUpdate(BaseModel):
 
     description: str | None = None
     source: str | None = None
+
+class OpportunityListResponse(BaseModel):
+    items: list[OpportunityResponse]
+    page: int
+    limit: int
+    total: int
+    pages: int
