@@ -36,6 +36,7 @@ def get_opportunities(
     country: str | None = None,
     company: str | None = None,
     source: str | None = None,
+    remote: bool | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     sort_by: str = Query("date_posted"),
@@ -52,6 +53,9 @@ def get_opportunities(
 
     if source:
         query = query.filter(Opportunity.source == source)
+
+    if remote is not None:
+        query = query.filter(Opportunity.remote == remote)
 
     sort_fields = {
         "date_posted": Opportunity.date_posted,

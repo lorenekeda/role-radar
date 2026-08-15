@@ -18,6 +18,8 @@ class Opportunity(Base):
     city: Mapped[str | None] = mapped_column(String(100))
     country: Mapped[str | None] = mapped_column(String(100))
 
+    remote: Mapped[bool] = mapped_column(default=False)
+
     url: Mapped[str] = mapped_column(String(500), unique=True)
 
     salary_min: Mapped[float | None] = mapped_column(Float)
