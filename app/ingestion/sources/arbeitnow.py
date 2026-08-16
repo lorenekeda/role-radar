@@ -3,6 +3,7 @@ from datetime import datetime
 import httpx
 
 from app.ingestion.base import OpportunitySource
+from app.ingestion.location import normalize_location
 from app.schemas.opportunity import OpportunityCreate
 
 
@@ -27,12 +28,16 @@ class ArbeitnowSource(OpportunitySource):
                 job["created_at"]
             ).date()
 
+            city, country = normalize_location(
+                job.get("location")
+            )
+
             opportunity = OpportunityCreate(
                 title=job["title"],
                 company=job["company_name"],
                 location=job.get("location") or None,
-                city=None,
-                country=None,
+                city=city,
+                country=country,
                 remote=job.get("remote", False),
                 url=job["url"],
                 salary_min=None,

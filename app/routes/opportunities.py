@@ -34,9 +34,11 @@ def create_opportunity(
 @router.get("/", response_model=OpportunityListResponse)
 def get_opportunities(
     country: str | None = None,
+    city: str | None = None,
     company: str | None = None,
     source: str | None = None,
     remote: bool | None = None,
+    search: str | None = None,
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     sort_by: str = Query("date_posted"),
@@ -46,7 +48,10 @@ def get_opportunities(
     query = db.query(Opportunity)
 
     if country:
-        query = query.filter(Opportunity.country == country)
+        query = query.filter(Opportunity.country.ilike(country))
+
+    if city:
+        query = query.filter(Opportunity.city.ilike(city))
 
     if company:
         query = query.filter(Opportunity.company == company)
@@ -56,6 +61,14 @@ def get_opportunities(
 
     if remote is not None:
         query = query.filter(Opportunity.remote == remote)
+    if search:
+        search_pattern = f"%{search}%"
+
+        query = query.filter(
+            Opportunity.title.ilike(search_pattern)
+            | Opportunity.company.ilike(search_pattern)
+            | Opportunity.description.ilike(search_pattern)
+        )
 
     sort_fields = {
         "date_posted": Opportunity.date_posted,

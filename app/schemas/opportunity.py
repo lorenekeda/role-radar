@@ -77,4 +77,4 @@ class IngestionResponse(BaseModel):
     source: str
     found: int
     created: int
-    skipped: int
+    updated: int

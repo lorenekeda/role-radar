@@ -18,7 +18,7 @@ def ingest_opportunities(
     logger.info("Found %d opportunities", len(opportunities))
 
     created_count = 0
-    skipped_count = 0
+    updated_count = 0
 
     for opportunity_data in opportunities:
         existing = (
@@ -28,11 +28,16 @@ def ingest_opportunities(
         )
 
         if existing:
-            skipped_count += 1
+            for field, value in opportunity_data.model_dump().items():
+                setattr(existing, field, value)
+
+            updated_count += 1
+
             logger.info(
-                "Skipping duplicate opportunity: %s",
+                "Updated existing opportunity: %s",
                 opportunity_data.url,
             )
+
             continue
 
         opportunity = Opportunity(
@@ -47,12 +52,12 @@ def ingest_opportunities(
     logger.info(
         "Ingestion complete: %d created, %d skipped",
         created_count,
-        skipped_count,
+        updated_count,
     )
 
     return {
     "source": source.__class__.__name__,
     "found": len(opportunities),
     "created": created_count,
-    "skipped": skipped_count,
+    "updated": updated_count,
     }
