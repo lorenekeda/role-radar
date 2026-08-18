@@ -53,6 +53,7 @@ class OpportunityUpdate(BaseModel):
     location: str | None = None
     city: str | None = None
     country: str | None = None
+    remote: bool | None = None
 
     url: str | None = None
 

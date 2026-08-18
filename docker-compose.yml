@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: role_radar
+      POSTGRES_USER: role_radar
+      POSTGRES_PASSWORD: role_radar_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://role_radar:role_radar_password@db:5432/role_radar
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
